@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Final, Dict, List
+from typing import Final, Dict
 
 
 class Severity(Enum):
