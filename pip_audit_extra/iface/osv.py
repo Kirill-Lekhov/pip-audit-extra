@@ -14,8 +14,6 @@ class OSVRouter:
 
 
 class OSVService:
-	ENCODING: str = "utf-8"
-
 	def __init__(self) -> None:
 		self.http = PoolManager()
 		self.router = OSVRouter()
@@ -40,7 +38,7 @@ class OSVService:
 		if response_content_type != types_map[".json"]:
 			raise ValueError(f"Unexpected response content type: {response_content_type}")
 
-		data = loads(response.data, encoding=self.ENCODING)
+		data = loads(response.data)
 		assert isinstance(data, dict), "Invalid response data. A dict was expected"
 
 		return data
