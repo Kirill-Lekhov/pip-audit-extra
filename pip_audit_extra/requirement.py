@@ -17,6 +17,6 @@ def clean_requirements(requirements: str) -> str:
 			continue
 
 		line_parts = line.split(" ; ")
-		dependencies.append(line_parts[0].strip())
+		dependencies.append(line_parts[0].strip().rstrip(" \\"))
 
 	return "\n".join(dependencies)
