@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pip-audit-extra"
-version = "0.0.1"
+version = "0.0.1-rc0"
 description = "Extended version of pip-audit"
 authors = ["Kirill_Lekhov <kirill.lekhov@mail.ru>"]
 license = "MIT"
@@ -8,7 +8,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
+pip-audit = "^2.7.3"
+rich = "^13.9.4"
 
+[tool.poetry.scripts]
+pip-audit-extra = "pip_audit_extra.__main__:main"
 
 [build-system]
 requires = ["poetry-core"]
