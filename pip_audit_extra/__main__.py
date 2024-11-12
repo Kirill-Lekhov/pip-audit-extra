@@ -21,9 +21,9 @@ def main() -> int:
 			return 1
 
 	if namespace.severity is None:
-		console.print("[green]No vulnerabilities found✨[/green]")
+		console.print("[green]✨ No vulnerabilities found ✨[/green]")
 	else:
-		console.print(f"[green]No {namespace.severity.value} vulnerabilities found✨[/green]")
+		console.print(f"[green]✨ No {namespace.severity.value} vulnerabilities found ✨[/green]")
 
 	return 0
 
