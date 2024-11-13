@@ -5,8 +5,12 @@ from pip_audit_extra.vulnerability.dataclass import Vulnerability
 from pip_audit_extra.vulnerability.filter.filter import VulnerabilityFilter
 from pip_audit_extra.requirement import clean_requirements
 
-from typing import List
+from typing import List, Final
 from warnings import warn
+
+
+VULN_ID_PREFIX_PYSEC: Final[str] = "PYSEC"
+VULN_ID_PREFIX_GHSA: Final[str] = "GHSA"
 
 
 def audit(requirements: str, vulnerability_filter: VulnerabilityFilter) -> List[Vulnerability]:
@@ -30,6 +34,13 @@ def audit(requirements: str, vulnerability_filter: VulnerabilityFilter) -> List[
 			if vuln_id := vuln.get("id"):
 				try:
 					vuln_details = osv_service.get_vulnerability(vuln_id)
+
+					if vuln_id.startswith(VULN_ID_PREFIX_PYSEC):
+						for alias in vuln_details.get("aliases", []):
+							if alias.startswith(VULN_ID_PREFIX_GHSA):
+								vuln_details = osv_service.get_vulnerability(alias)		# GHSA has severity
+								break
+
 					raw_severity = vuln_details.get("database_specific", {}).get("severity")
 					vulns.append(
 						Vulnerability(
