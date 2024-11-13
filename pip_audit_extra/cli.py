@@ -36,6 +36,20 @@ class SeverityFilterHandler:
 		return Severity[severity_name]
 
 
+class FailLevelHandler:
+	def __call__(self, value: Any) -> Optional[Severity]:
+		if value is None:
+			return value
+
+		if not isinstance(value, str):
+			raise ArgumentTypeError("Value must be str or None")
+
+		try:
+			return Severity[value.upper()]
+		except Exception as err:
+			raise ArgumentTypeError("Unknown severity was met") from err
+
+
 def get_parser() -> ArgumentParser:
 	parser = ArgumentParser(
 		"pip-audit-extra",
@@ -49,7 +63,18 @@ def get_parser() -> ArgumentParser:
 vulnerability filter by severity.
 Possible values: {', '.join(Severity.get_names())}.
 By default, the filter selects vulnerabilities with the specified severity AND SEVERITIES WITH A HIGHER PRIORITY.
-To select only the specified level, add the prefix `~`, for example `--severity ~HIGH`\
+To select only the specified level, add the prefix `~`, for example `--severity ~HIGH`.
+It only affects the vulnerability table.\
+""",
+	)
+	parser.add_argument(
+		"--fail-level",
+		type=FailLevelHandler(),
+		default=None,
+		help=f"""\
+severity of vulnerability from which the audit will be considered to have failed.
+Possible values: {', '.join(Severity.get_names())}.
+Affects the audit result.\
 """,
 	)
 
