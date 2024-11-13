@@ -19,6 +19,11 @@ Poetry
 poetry export -f requirements.txt | pip-audit-extra
 ```
 
+UV
+```sh
+uv export --format requirements-txt | pip-audit-extra
+```
+
 ### Severity filter
 If necessary, you can filter vulnerabilities by severity.
 By default, the filter selects vulnerabilities with the specified severity AND SEVERITIES WITH A HIGHER PRIORITY.
