@@ -21,6 +21,12 @@ poetry export -f requirements.txt | pip-audit-extra
 
 ### Severity filter
 If necessary, you can filter vulnerabilities by severity.
+By default, the filter selects vulnerabilities with the specified severity AND SEVERITIES WITH A HIGHER PRIORITY.
 ```sh
 cat requirements.txt | pip-audit-extra --severity CRITICAL
+```
+
+To select only the specified level, add the prefix `~`, for example:
+```sh
+cat requirements.txt | pip-audit-extra --severity ~CRITICAL
 ```

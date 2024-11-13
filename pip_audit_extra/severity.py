@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Final, Dict
+from typing import Final, Dict, List
 
 
 class Severity(Enum):
@@ -8,8 +8,9 @@ class Severity(Enum):
 	MODERATE = "MODERATE"
 	LOW = "LOW"
 
-	def __str__(self) -> str:
-		return self.value
+	@classmethod
+	def get_names(cls) -> List[str]:
+		return [i.name for i in cls]
 
 
 SEVERITY_PRIORITY: Final[Dict[Severity, int]] = {

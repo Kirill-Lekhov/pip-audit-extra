@@ -1,20 +1,21 @@
 from pip_audit_extra.severity import Severity
 from pip_audit_extra.iface.audit import get_audit_report
 from pip_audit_extra.iface.osv import OSVService
-from pip_audit_extra.vulnerability import Vulnerability
+from pip_audit_extra.vulnerability.dataclass import Vulnerability
+from pip_audit_extra.vulnerability.filter.filter import VulnerabilityFilter
 from pip_audit_extra.requirement import clean_requirements
 
-from typing import Optional, List
+from typing import List
 from warnings import warn
 
 
-def audit(requirements: str, severity: Optional[Severity] = None) -> List[Vulnerability]:
+def audit(requirements: str, vulnerability_filter: VulnerabilityFilter) -> List[Vulnerability]:
 	"""
 	Performs project dependencies audit.
 
 	Args:
 		requirements: Project dependencies in the `requirements.txt` format.
-		severity: Severity of dependency checking.
+		vulnerability_filter: Vulnerability filter.
 
 	Returns:
 		Vulnerability object list.
@@ -42,7 +43,4 @@ def audit(requirements: str, severity: Optional[Severity] = None) -> List[Vulner
 				except Exception as err:
 					warn(f"Could not get information about {vuln_id} vulnerability. Error: {err}")
 
-	if severity is not None:
-		vulns = [i for i in vulns if i.severity is severity]
-
-	return vulns
+	return [*vulnerability_filter.filter(vulns)]
