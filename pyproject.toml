@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pip-audit-extra"
-version = "0.0.1-rc5"
+version = "0.0.1-rc6"
 description = "Extended version of pip-audit"
 authors = ["Kirill_Lekhov <kirill.lekhov@mail.ru>"]
 license = "MIT"
