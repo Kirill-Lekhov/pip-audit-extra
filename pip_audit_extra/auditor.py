@@ -49,6 +49,8 @@ class Auditor:
 						severity=severity,
 					)
 
+		self.cache.save()
+
 	def get_severity(self, vuln: dict) -> Optional[Severity]:
 		vuln_id = vuln["id"]
 
