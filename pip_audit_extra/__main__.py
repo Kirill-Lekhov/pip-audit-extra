@@ -1,5 +1,5 @@
 from pip_audit_extra.cli import get_parser
-from pip_audit_extra.core import audit
+from pip_audit_extra.auditor import Auditor
 from pip_audit_extra.vulnerability.print import print_vulnerabilities
 from pip_audit_extra.vulnerability.filter.filter import VulnerabilityFilter
 from pip_audit_extra.vulnerability.filter.severity import SeverityChecker
@@ -15,9 +15,10 @@ def main() -> int:
 	vulnerability_filter = VulnerabilityFilter(severity=namespace.severity)
 	requirements = stdin.read()
 	console = Console()
+	auditor = Auditor()
 
 	with console.status("Vulnerabilities are being searched...", spinner="boxBounce2"):
-		vulns = [*audit(requirements)]
+		vulns = [*auditor.audit(requirements)]
 
 		if filtered_vulns := [*vulnerability_filter.filter(vulns)]:
 			print_vulnerabilities(console, filtered_vulns)
