@@ -7,6 +7,7 @@ from pip_audit_extra.requirement import clean_requirements
 
 from typing import Generator, Final, Optional
 from warnings import warn
+from datetime import timedelta
 
 
 VULN_ID_PREFIX_PYSEC: Final[str] = "PYSEC"
@@ -14,9 +15,9 @@ VULN_ID_PREFIX_GHSA: Final[str] = "GHSA"
 
 
 class Auditor:
-	def __init__(self) -> None:
+	def __init__(self, cache_lifetime: Optional[timedelta]) -> None:
 		self.osv_service = OSVService()
-		self.cache = Cache()
+		self.cache = Cache(lifetime=cache_lifetime)
 
 	def audit(self, requirements: str) -> Generator[Vulnerability, None, None]:
 		"""

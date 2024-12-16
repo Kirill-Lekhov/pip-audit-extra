@@ -3,9 +3,12 @@ from pip_audit_extra.severity import Severity
 
 from argparse import ArgumentParser, ArgumentTypeError
 from typing import Optional, Any, Final
+from datetime import timedelta
+from re import compile, Pattern, IGNORECASE
 
 
 FILTER_PREFIX_EXAC: Final[str] = "~"
+LIFETIME_RE: Final[Pattern] = compile(r"^\d+[dhms]$", IGNORECASE)
 
 
 class SeverityFilterHandler:
@@ -50,6 +53,32 @@ class FailLevelHandler:
 			raise ArgumentTypeError("Unknown severity was met") from err
 
 
+class CacheLifetimeHandler:
+	def __call__(self, value: Any) -> Optional[timedelta]:
+		if value is None:
+			return value
+
+		if not isinstance(value, str):
+			raise ArgumentTypeError("Value must be str or None")
+
+		if value.isdigit():
+			return timedelta(seconds=int(value))
+
+		elif LIFETIME_RE.match(value):
+			count, unit = int(value[:-1]), value[-1].lower()
+
+			if unit == "d":
+				return timedelta(days=count)
+			elif unit == "h":
+				return timedelta(hours=count)
+			elif unit == "m":
+				return timedelta(minutes=count)
+			elif unit == "s":
+				return timedelta(seconds=count)
+
+		raise ArgumentTypeError("Value must be string in format: '<int>[d,h,m,s]'")
+
+
 def get_parser() -> ArgumentParser:
 	parser = ArgumentParser(
 		"pip-audit-extra",
@@ -75,6 +104,23 @@ It only affects the vulnerability table.\
 severity of vulnerability from which the audit will be considered to have failed.
 Possible values: {', '.join(Severity.get_names())}.
 Affects the audit result.\
+""",
+	)
+	parser.add_argument(
+		"--cache-lifetime",
+		type=CacheLifetimeHandler(),
+		default="1d",
+		help="""\
+lifetime of each record in cache.
+Supported formats:
+* <int> - seconds;
+* <int>d - days;
+* <int>h - hours;
+* <int>m - minutes;
+* <int>s - seconds.
+
+Example 1: 12h
+Example 2: 43200\
 """,
 	)
 

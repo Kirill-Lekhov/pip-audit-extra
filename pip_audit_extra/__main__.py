@@ -15,7 +15,7 @@ def main() -> int:
 	vulnerability_filter = VulnerabilityFilter(severity=namespace.severity)
 	requirements = stdin.read()
 	console = Console()
-	auditor = Auditor()
+	auditor = Auditor(cache_lifetime=namespace.cache_lifetime)
 
 	with console.status("Vulnerabilities are being searched...", spinner="boxBounce2"):
 		vulns = [*auditor.audit(requirements)]
