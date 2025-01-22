@@ -39,6 +39,8 @@ class OSVService:
 			raise ValueError(f"Unexpected response content type: {response_content_type}")
 
 		data = loads(response.data)
-		assert isinstance(data, dict), "Invalid response data. A dict was expected"
+
+		if not isinstance(data, dict):
+			raise ValueError("Invalid response data. A dict was expected")
 
 		return data
