@@ -22,7 +22,7 @@ jobs:
     - run: script/cibuild
     - uses: actions/upload-artifact@v4
       with:
-        name: coverage-report
+        name: coverage-report-${{ matrix.python-version }}
         path: htmlcov/
         retention-days: 30
     - name: Upload coverage to Codecov
