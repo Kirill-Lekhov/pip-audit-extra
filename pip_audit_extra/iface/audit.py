@@ -34,6 +34,7 @@ def get_audit_report(requirements: str, timeout: float = 600) -> dict:
 
 	report = loads(completed_process.stdout)
 
-	assert isinstance(report, dict), "Deserialized report must be of dict type"
+	if not isinstance(report, dict):
+		raise ValueError("Deserialized report must be of dict type")
 
 	return report

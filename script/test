@@ -11,7 +11,7 @@ lint() {
 case $# in
 	0)
 		lint
-		# poetry run pytest
+		poetry run pytest
 		echo "pytest: Not implemented"
 		;;
 	1)
