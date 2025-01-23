@@ -1,4 +1,4 @@
-# pip-audit-extra
+# pip-audit-extra [![codecov](https://codecov.io/gh/Kirill-Lekhov/pip-audit-extra/graph/badge.svg?token=KBUU5XZ982)](https://codecov.io/gh/Kirill-Lekhov/pip-audit-extra)
 Extended version of [pip-audit](https://pypi.org/project/pip-audit/).
 
 ## Features
