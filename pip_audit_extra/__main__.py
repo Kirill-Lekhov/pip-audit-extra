@@ -28,9 +28,8 @@ def main() -> int:
 
 		severity_checker = SeverityChecker(namespace.fail_level)
 
-		for vuln in vulns:
-			if severity_checker.check(vuln):
-				return 1
+		if any(map(severity_checker.check, vulns)):
+			return 1
 
 	if vulns:
 		console.print("[green]✨ No vulnerabilities leading to failure found ✨[/green]")
