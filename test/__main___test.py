@@ -33,10 +33,17 @@ class FakeConsole:
 
 
 class FakeNamespace:
-	def __init__(self, severity: SeverityFilterOption, cache_lifetime: str, fail_level: Optional[Severity]) -> None:
+	def __init__(
+		self,
+		severity: SeverityFilterOption,
+		cache_lifetime: str,
+		fail_level: Optional[Severity],
+		local: bool,
+	) -> None:
 		self.severity = severity
 		self.cache_lifetime = cache_lifetime
 		self.fail_level = fail_level
+		self.local = local
 
 
 class FakeParser:
@@ -59,8 +66,9 @@ class FakeStream:
 
 
 class FakeAuditor:
-	def __init__(self, cache_lifetime: str, *, vulnerabilities: List[Vulnerability]) -> None:
+	def __init__(self, cache_lifetime: str, local: bool, *, vulnerabilities: List[Vulnerability]) -> None:
 		self.cache_lifetime = cache_lifetime
+		self.local = local
 		self._last_audit_requirements = None
 		self._vulnerabilities = vulnerabilities
 
@@ -71,16 +79,17 @@ class FakeAuditor:
 
 class TestMain:
 	def test_exceptions(self):
-		def make_auditor(cache_lifetime: str) -> FakeAuditor:
+		def make_auditor(cache_lifetime: str, local: bool) -> FakeAuditor:
 			return FakeAuditor(
 				cache_lifetime,
+				local,
 				vulnerabilities=[
 					make_vulnerability(severity=Severity.CRITICAL),
 				],
 			)
 
 
-		namespace = FakeNamespace(SeverityFilterOption(exac=False, value=Severity.CRITICAL), "1d", None)
+		namespace = FakeNamespace(SeverityFilterOption(exac=False, value=Severity.CRITICAL), "1d", None, False)
 
 		with patch.object(main, "get_parser") as get_parser_func:
 			get_parser_func.return_value = FakeParser(namespace)
@@ -97,13 +106,14 @@ class TestMain:
 							assert main.main() == 1
 
 	def test_normal(self):
-		namespace = FakeNamespace(SeverityFilterOption(exac=False, value=Severity.HIGH), "1d", Severity.CRITICAL)
-		auditor = FakeAuditor("", vulnerabilities=[])
+		namespace = FakeNamespace(SeverityFilterOption(exac=False, value=Severity.HIGH), "1d", Severity.CRITICAL, False)
+		auditor = FakeAuditor("", False, vulnerabilities=[])
 		console = FakeConsole()
 
 
-		def make_auditor(cache_lifetime: str) -> FakeAuditor:
+		def make_auditor(cache_lifetime: str, local: bool) -> FakeAuditor:
 			auditor.cache_lifetime = cache_lifetime
+			auditor.local = local
 
 			return auditor
 

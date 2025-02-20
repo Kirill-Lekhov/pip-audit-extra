@@ -13,9 +13,14 @@ def main() -> int:
 	parser = get_parser()
 	namespace = parser.parse_args(argv[1:])
 	vulnerability_filter = VulnerabilityFilter(severity=namespace.severity)
-	requirements = stdin.read()
+
+	if namespace.local:
+		requirements = ""
+	else:
+		requirements = stdin.read()
+
 	console = Console()
-	auditor = Auditor(cache_lifetime=namespace.cache_lifetime)
+	auditor = Auditor(cache_lifetime=namespace.cache_lifetime, local=namespace.local)
 
 	with console.status("Vulnerabilities are being searched...", spinner="boxBounce2"):
 		vulns = [*auditor.audit(requirements)]

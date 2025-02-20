@@ -22,6 +22,8 @@ poetry export -f requirements.txt | pip-audit-extra
 UV
 ```sh
 uv export --format requirements-txt | pip-audit-extra
+# or
+uv run pip-audit-extra --local
 ```
 
 ### Severity filter
@@ -74,4 +76,11 @@ cat requirements.txt | pip-audit-extra --cache-lifetime 12h
 
 # 1 weak
 cat requirements.txt | pip-audit-extra --cache-lifetime 7d
+```
+
+### Local packages check
+You can check packages which installed in the current local environment without installing dependencies in isolated environment.
+
+```sh
+pip-audit-extra --local
 ```

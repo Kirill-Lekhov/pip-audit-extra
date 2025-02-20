@@ -123,5 +123,13 @@ Example 1: 12h
 Example 2: 43200\
 """,
 	)
+	parser.add_argument(
+		"--local",
+		default=False,
+		action="store_true",
+		help="""
+analyze packages installed in the current local environment.
+"""
+	)
 
 	return parser

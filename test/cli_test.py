@@ -80,7 +80,7 @@ def test_get_parser():
 
 	assert parser.prog == "pip-audit-extra"
 	assert parser.description == "An add-on to the pip-audit utility, which allows to work with vulnerabilities of a certain severity"
-	assert len(parser._actions) == 4
+	assert len(parser._actions) == 5
 
 	assert parser._actions[1].option_strings == ["--severity"]
 	assert isinstance(parser._actions[1].type, SeverityFilterHandler)
@@ -93,3 +93,6 @@ def test_get_parser():
 	assert parser._actions[3].option_strings == ["--cache-lifetime"]
 	assert isinstance(parser._actions[3].type, CacheLifetimeHandler)
 	assert parser._actions[3].default == "1d"
+
+	assert parser._actions[4].option_strings == ["--local"]
+	assert parser._actions[4].default == False

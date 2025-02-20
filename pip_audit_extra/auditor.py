@@ -1,5 +1,5 @@
 from pip_audit_extra.severity import Severity
-from pip_audit_extra.iface.audit import get_audit_report
+from pip_audit_extra.iface.audit import get_audit_report, get_audit_local_report
 from pip_audit_extra.iface.osv import OSVService
 from pip_audit_extra.vulnerability.dataclass import Vulnerability
 from pip_audit_extra.vulnerability.cache import Cache, VulnerabilityData
@@ -15,9 +15,10 @@ VULN_ID_PREFIX_GHSA: Final[str] = "GHSA"
 
 
 class Auditor:
-	def __init__(self, cache_lifetime: Optional[timedelta]) -> None:
+	def __init__(self, cache_lifetime: Optional[timedelta], local: bool = False) -> None:
 		self.osv_service = OSVService()
 		self.cache = Cache(lifetime=cache_lifetime)
+		self.local = local
 
 	def audit(self, requirements: str) -> Generator[Vulnerability, None, None]:
 		"""
@@ -29,8 +30,11 @@ class Auditor:
 		Yields:
 			Vulnerability objects.
 		"""
-		requirements = clean_requirements(requirements)
-		raw_report = get_audit_report(requirements)
+		if self.local:
+			raw_report = get_audit_local_report()
+		else:
+			requirements = clean_requirements(requirements)
+			raw_report = get_audit_report(requirements)
 
 		for dependency in raw_report.get("dependencies", []):
 			for vuln in dependency.get("vulns", []):
