@@ -20,7 +20,7 @@ def main() -> int:
 		requirements = stdin.read()
 
 	console = Console()
-	auditor = Auditor(cache_lifetime=namespace.cache_lifetime, local=namespace.local)
+	auditor = Auditor(cache_lifetime=namespace.cache_lifetime, local=namespace.local, disable_pip=namespace.disable_pip)
 
 	with console.status("Vulnerabilities are being searched...", spinner="boxBounce2"):
 		vulns = [*auditor.audit(requirements)]

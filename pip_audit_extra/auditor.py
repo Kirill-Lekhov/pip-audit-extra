@@ -17,10 +17,11 @@ VULN_ID_PREFIX_GHSA: Final[str] = "GHSA"
 
 
 class Auditor:
-	def __init__(self, cache_lifetime: Optional[timedelta], local: bool = False) -> None:
+	def __init__(self, cache_lifetime: Optional[timedelta], local: bool = False, disable_pip: bool = False) -> None:
 		self.osv_service = OSVService()
 		self.cache = Cache(lifetime=cache_lifetime)
 		self.local = local
+		self.disable_pip = disable_pip
 
 	def audit(self, requirements: str) -> Generator[Vulnerability, None, None]:
 		"""
@@ -36,7 +37,10 @@ class Auditor:
 			preferences = AuditPreferences()
 			audit_strategy_cls = PIPAuditLocal
 		else:
-			preferences = AuditPreferencesRequirements(clean_requirements(requirements))
+			if not self.disable_pip:
+				requirements = clean_requirements(requirements)
+
+			preferences = AuditPreferencesRequirements(requirements, disable_pip=self.disable_pip)
 			audit_strategy_cls = PIPAuditRequirements
 
 		pip_audit = audit_strategy_cls()

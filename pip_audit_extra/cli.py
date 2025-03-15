@@ -131,5 +131,13 @@ Example 2: 43200\
 analyze packages installed in the current local environment.
 """
 	)
+	parser.add_argument(
+		"--disable-pip",
+		default=False,
+		action="store_true",
+		help="""
+don't use `pip` for dependency resolution; this can only be used with hashed requirements files.
+"""
+	)
 
 	return parser
