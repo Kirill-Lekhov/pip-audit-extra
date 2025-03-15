@@ -17,6 +17,8 @@ cat requirements.txt | pip-audit-extra
 Poetry
 ```sh
 poetry export -f requirements.txt | pip-audit-extra
+# or
+poetry run pip-audit-extra --local
 ```
 
 UV
@@ -83,4 +85,11 @@ You can check packages which installed in the current local environment without 
 
 ```sh
 pip-audit-extra --local
+```
+
+### Disable pip
+You can skip isolated environment building (only if requirements.txt file contains hashes) to speedup audit.
+
+```sh
+cat requirements.txt | pip-audit-extra --disable-pip
 ```
