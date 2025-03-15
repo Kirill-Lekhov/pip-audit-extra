@@ -1,4 +1,5 @@
-from pip_audit_extra.iface.osv import OSVRouter, OSVService
+from pip_audit_extra.iface.osv.service import OSVService
+from pip_audit_extra.iface.osv.router import OSVRouter
 
 from urllib3 import PoolManager
 from unittest.mock import patch
@@ -19,19 +20,6 @@ class FakeResponse:
 		self.status = status
 		self.headers = headers
 		self.data = data
-
-
-class TestOSVRouter:
-	def test___init__(self):
-		router = OSVRouter()
-		assert router.base_url == "https://api.osv.dev/v1/"
-
-		router = OSVRouter("BASE_URL")
-		assert router.base_url == "BASE_URL"
-
-	def test_vulnerability_detail(self):
-		router = OSVRouter("BASE_URL")
-		assert router.vulnerability_detail("VULN_ID") == "BASE_URL/vulns/VULN_ID"
 
 
 class TestOSVService:

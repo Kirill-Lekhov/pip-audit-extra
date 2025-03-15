@@ -1,16 +1,9 @@
+from pip_audit_extra.iface.osv.router import OSVRouter
+
 from urllib3 import PoolManager
 from json import loads
-from posixpath import join
 from http import HTTPStatus
 from mimetypes import types_map
-
-
-class OSVRouter:
-	def __init__(self, base_url: str = "https://api.osv.dev/v1/") -> None:
-		self.base_url = base_url
-
-	def vulnerability_detail(self, vuln_id: str) -> str:
-		return join(self.base_url, "vulns", vuln_id)
 
 
 class OSVService:
