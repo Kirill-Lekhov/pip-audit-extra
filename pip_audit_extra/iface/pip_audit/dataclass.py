@@ -56,4 +56,12 @@ class AuditReport:
 
 	@classmethod
 	def from_dict(cls, d: dict) -> "AuditReport":
-		return cls(dependencies=[Dependency.from_dict(i) for i in d.get("dependencies", [])])
+		dependencies = []
+
+		for i in d.get("dependencies", []):
+			if "skip_reason" in i:
+				continue		# TODO: Collect skipped dependencies
+
+			dependencies.append(Dependency.from_dict(i))
+
+		return cls(dependencies=dependencies)
