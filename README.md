@@ -93,3 +93,7 @@ You can skip isolated environment building (only if requirements.txt file contai
 ```sh
 cat requirements.txt | pip-audit-extra --disable-pip
 ```
+
+#### ⛔Limitations⛔
+There are certain types of dependencies that are not supported by pip-audit
+(for example, dependencies installed directly from github with a specific hash).
