@@ -80,6 +80,13 @@ cat requirements.txt | pip-audit-extra --cache-lifetime 12h
 cat requirements.txt | pip-audit-extra --cache-lifetime 7d
 ```
 
+#### Custom cache path
+You can use the `PAE_CACHE_DIR` environment variable to specify path to the cache folder.
+
+```sh
+PAE_CACHE_DIR="/tmp/pae/" pip-audit-extra --local
+```
+
 ### Local packages check
 You can check packages which installed in the current local environment without installing dependencies in isolated environment.
 
