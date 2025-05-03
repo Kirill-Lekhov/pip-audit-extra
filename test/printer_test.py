@@ -2,9 +2,10 @@ from pip_audit_extra.printer import Printer
 from pip_audit_extra.generic.rich.time_elapsed_column import CustomTimeElapsedColumn
 
 from unittest.mock import patch, Mock
+from typing import cast
 
-from rich.console import Console, Group
-from rich.progress import Progress, TextColumn, BarColumn
+from rich.console import Console
+from rich.progress import Progress, TextColumn, BarColumn, TaskID
 from rich.control import Control
 from rich.segment import ControlType
 from rich.text import Text
@@ -107,28 +108,109 @@ class TestPrinter:
 										progress_exit_mock.assert_called_once_with(None, None, None)
 
 	def test_noop(self):
-		pass
+		assert Printer.noop() is None
 
 	def test_handle_collecting_start(self):
-		pass
+		console = Console()
+		printer = Printer(console)
+
+		with patch.object(printer.progress, "add_task") as add_task_mock:
+			add_task_mock.return_value = 1718
+			printer.handle_collecting_start()
+			assert printer.task_id_deps_collecting == 1718
+			add_task_mock.assert_called_once_with("Collecting dependencies...", total=None)
 
 	def test_handle_collecting_end(self):
-		pass
+		console = Console()
+		printer = Printer(console)
+		printer.task_id_deps_collecting = None
+
+		with patch.object(printer.progress, "remove_task") as remove_task_mock:
+			printer.handle_collecting_end()
+			remove_task_mock.assert_not_called()
+
+		printer.task_id_deps_collecting = cast(TaskID, 1718)
+
+		with patch.object(printer.progress, "remove_task") as remove_task_mock:
+			printer.handle_collecting_end()
+			remove_task_mock.assert_called_once_with(1718)
 
 	def test_handle_checking_start(self):
-		pass
+		console = Console()
+		printer = Printer(console)
+
+		with patch.object(printer.progress, "add_task") as add_task_mock:
+			add_task_mock.return_value = 1718
+			printer.handle_checking_start(9978)
+			assert printer.task_id_deps_checking == 1718
+			add_task_mock.assert_called_once_with("Checking dependencies...", total=9978)
 
 	def test_handle_checking_step(self):
-		pass
+		console = Console()
+		printer = Printer(console)
+		printer.task_id_deps_checking = None
+
+		with patch.object(printer.progress, "update") as update_mock:
+			printer.handle_checking_step()
+			update_mock.assert_not_called()
+
+		printer.task_id_deps_checking = cast(TaskID, 9872)
+
+		with patch.object(printer.progress, "update") as update_mock:
+			printer.handle_checking_step()
+			update_mock.assert_called_once_with(9872, advance=1)
 
 	def test_handle_checking_end(self):
-		pass
+		console = Console()
+		printer = Printer(console)
+		printer.task_id_deps_checking = None
+
+		with patch.object(printer.progress, "remove_task") as remove_task_mock:
+			printer.handle_checking_end()
+			remove_task_mock.assert_not_called()
+
+		printer.task_id_deps_checking = cast(TaskID, 1718)
+
+		with patch.object(printer.progress, "remove_task") as remove_task_mock:
+			printer.handle_checking_end()
+			remove_task_mock.assert_called_once_with(1718)
 
 	def test_handle_vulns_inspecting_start(self):
-		pass
+		console = Console()
+		printer = Printer(console)
+
+		with patch.object(printer.progress, "add_task") as add_task_mock:
+			add_task_mock.return_value = 1718
+			printer.handle_vulns_inspecting_start(9978)
+			assert printer.task_id_vulns_inspecting == 1718
+			add_task_mock.assert_called_once_with("Inspecting vulnerabilities...", total=9978)
 
 	def test_handle_vulns_inspecting_step(self):
-		pass
+		console = Console()
+		printer = Printer(console)
+		printer.task_id_vulns_inspecting = None
+
+		with patch.object(printer.progress, "update") as update_mock:
+			printer.handle_vulns_inspecting_step()
+			update_mock.assert_not_called()
+
+		printer.task_id_vulns_inspecting = cast(TaskID, 9872)
+
+		with patch.object(printer.progress, "update") as update_mock:
+			printer.handle_vulns_inspecting_step()
+			update_mock.assert_called_once_with(9872, advance=1)
 
 	def test_handle_vulns_inspecting_end(self):
-		pass
+		console = Console()
+		printer = Printer(console)
+		printer.task_id_vulns_inspecting = None
+
+		with patch.object(printer.progress, "remove_task") as remove_task_mock:
+			printer.handle_vulns_inspecting_end()
+			remove_task_mock.assert_not_called()
+
+		printer.task_id_vulns_inspecting = cast(TaskID, 1718)
+
+		with patch.object(printer.progress, "remove_task") as remove_task_mock:
+			printer.handle_vulns_inspecting_end()
+			remove_task_mock.assert_called_once_with(1718)
