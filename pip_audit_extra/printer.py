@@ -41,7 +41,7 @@ class Printer(AbstractContextManager):
 		exc_value: Optional[BaseException],
 		traceback: Optional[TracebackType],
 	) -> None:
-		if self.task_id_main is not None and not all((exc_type, exc_value, traceback)):
+		if self.task_id_main is not None and not any((exc_type, exc_value, traceback)):
 			task_main = self.progress.tasks[self.task_id_main]
 			self.progress.remove_task(self.task_id_main)
 			column = CustomTimeElapsedColumn(style="white")
