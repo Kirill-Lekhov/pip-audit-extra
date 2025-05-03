@@ -87,8 +87,8 @@ class Auditor:
 				except Exception as err:
 					warn(f"Could not get information about {vuln.id} vulnerability. Error: {err}")
 					continue
-
-				self.on_inspecting_step()
+				finally:
+					self.on_inspecting_step()
 
 				yield Vulnerability(
 					id=vuln.id,
