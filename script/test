@@ -12,7 +12,6 @@ case $# in
 	0)
 		lint
 		poetry run pytest
-		echo "pytest: Not implemented"
 		;;
 	1)
 		case $1 in
