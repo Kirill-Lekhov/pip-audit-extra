@@ -15,7 +15,13 @@ class Printer(AbstractContextManager):
 	"""
 	A specialized class for rendering the audit process.
 	"""
-	def __init__(self, console: Console, *, print_result: Optional[Callable[[], Any]] = None) -> None:
+	def __init__(
+		self,
+		console: Console,
+		*,
+		print_table: Optional[Callable[[], Any]] = None,
+		print_result: Optional[Callable[[], Any]] = None,
+	) -> None:
 		self.console = console
 		self.progress = Progress(
 			TextColumn("[progress.description]{task.description}"),
@@ -28,6 +34,7 @@ class Printer(AbstractContextManager):
 		self.task_id_deps_checking: Optional[TaskID] = None
 		self.task_id_vulns_inspecting: Optional[TaskID] = None
 
+		self.print_table = print_table or self.noop
 		self.print_result = print_result or self.noop
 
 	def __enter__(self) -> "Printer":
@@ -47,6 +54,7 @@ class Printer(AbstractContextManager):
 			column = CustomTimeElapsedColumn(style="white")
 			# Rewriting the empty line that remains from the progress bar
 			self.console.control(Control((ControlType.CURSOR_UP, 1)))
+			self.print_table()
 			self.print_result()
 			self.console.print(Text("The audit was completed in"), column.render(task_main), style="white")
 

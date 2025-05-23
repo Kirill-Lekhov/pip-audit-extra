@@ -36,7 +36,7 @@ def main() -> int:
 			vulns = [*auditor.audit(requirements)]
 
 			if filtered_vulns := [*vulnerability_filter.filter(vulns)]:
-				printer.print_result = partial(print_vulnerabilities, console, filtered_vulns)
+				printer.print_table = partial(print_vulnerabilities, console, filtered_vulns)
 
 			if vulns and namespace.fail_level is None:
 				return 1
