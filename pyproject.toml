@@ -9,9 +9,10 @@ repository = "https://github.com/Kirill-Lekhov/pip-audit-extra"
 keywords = ["pip-audit", "command-line", "pip", "audit"]
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.9"
 pip-audit = "^2.7.3"
 rich = "^13.9.4"
+urllib3 = "^2.6"
 
 [tool.poetry.scripts]
 pip-audit-extra = "pip_audit_extra.__main__:main"
