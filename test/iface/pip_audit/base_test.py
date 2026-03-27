@@ -2,6 +2,7 @@ from pip_audit_extra.iface.pip_audit.base import AuditPreferences, PIPAudit
 
 from subprocess import CompletedProcess
 from unittest.mock import patch
+from json import JSONDecodeError
 
 import pytest
 
@@ -35,14 +36,14 @@ class TestPIPAudit:
 				audit_mock.assert_called_once_with(preferences)
 				audit_postprocess_mock.assert_called_once_with("COMPLETED_PROCESS")
 
-	def test_audit_postprocess(self) -> None:
+	def test_audit_postprocess(self, capsys) -> None:
 		audit = TestAudit()
 		completed_process = CompletedProcess([], returncode=100)
 
 		with pytest.raises(RuntimeError, match="pip-audit returned an unexpected code: 100"):
 			audit.audit_postprocess(completed_process)
 
-		completed_process = CompletedProcess([], returncode=0, stdout="STDOUT")
+		completed_process = CompletedProcess([], returncode=0, stdout="STDOUT", stderr="STDERR")
 
 		with patch("pip_audit_extra.iface.pip_audit.base.loads") as loads_mock:
 			loads_mock.return_value = []
@@ -51,6 +52,14 @@ class TestPIPAudit:
 				audit.audit_postprocess(completed_process)
 
 			loads_mock.assert_called_once_with(completed_process.stdout)
+			loads_mock.reset_mock()
+			loads_mock.side_effect = JSONDecodeError("TEST", "", 0)
+
+			with pytest.raises(JSONDecodeError, match="TEST"):
+				audit.audit_postprocess(completed_process)
+
+			stdout, _ = capsys.readouterr()
+			assert stdout == "pip-audit error:\n\nSTDERR\n"
 
 		with patch("pip_audit_extra.iface.pip_audit.base.loads") as loads_mock:
 			loads_mock.return_value = {"key1": "value1"}

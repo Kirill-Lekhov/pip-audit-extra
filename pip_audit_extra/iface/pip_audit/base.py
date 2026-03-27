@@ -2,7 +2,7 @@ from pip_audit_extra.iface.pip_audit.dataclass import AuditReport
 
 from abc import ABC, abstractmethod
 from subprocess import CompletedProcess
-from json import loads
+from json import loads, JSONDecodeError
 
 
 class AuditPreferences:
@@ -32,7 +32,11 @@ class PIPAudit(ABC):
 		if completed_process.returncode not in {0, 1}:
 			raise RuntimeError(f"pip-audit returned an unexpected code: {completed_process.returncode}")
 
-		report = loads(completed_process.stdout)
+		try:
+			report = loads(completed_process.stdout)
+		except JSONDecodeError as err:
+			print("pip-audit error:", completed_process.stderr, sep="\n\n")
+			raise err
 
 		if not isinstance(report, dict):
 			raise ValueError("Deserialized report must be of dict type")
