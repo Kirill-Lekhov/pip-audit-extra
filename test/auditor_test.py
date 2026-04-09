@@ -226,10 +226,10 @@ class TestAuditor:
 					osv_service_get_vulnerability_mock.reset_mock()
 					osv_service_get_vulnerability_mock.return_value = {}
 					osv_service_get_vulnerability_mock.side_effect = [
-						{"aliases": ["VULN_ID", VULN_ID_PREFIX_GHSA + "_VULN_ID"]},
 						{"database_specific": {"severity": Severity.HIGH.value}},
 					]
 					dep_vuln.id = VULN_ID_PREFIX_PYSEC + "_VULN_ID"
+					dep_vuln.aliases = [VULN_ID_PREFIX_GHSA + "_VULN_ID"]
 					assert auditor.get_severity(dep_vuln) is Severity.HIGH
 					osv_service_get_vulnerability_mock.assert_called()
-					assert osv_service_get_vulnerability_mock.call_count == 2
+					assert osv_service_get_vulnerability_mock.call_count == 1

@@ -108,13 +108,15 @@ class Auditor:
 		if vuln_data := self.cache.get(vuln.id):
 			raw_severity = vuln_data.severity
 		else:
-			vuln_details = self.osv_service.get_vulnerability(vuln.id)
-
-			if vuln.id.startswith(VULN_ID_PREFIX_PYSEC):
-				for alias in vuln_details.get("aliases", []):
+			if vuln.id.startswith(VULN_ID_PREFIX_GHSA):		# no need to check aliases of GHSA's vulnerabilities
+				vuln_details = self.osv_service.get_vulnerability(vuln.id)
+			elif vuln.aliases:
+				for alias in vuln.aliases:
 					if alias.startswith(VULN_ID_PREFIX_GHSA):
 						vuln_details = self.osv_service.get_vulnerability(alias)		# GHSAs have severity
 						break
+			else:
+				vuln_details = self.osv_service.get_vulnerability(vuln.id)
 
 			raw_severity = vuln_details.get("database_specific", {}).get("severity")
 			self.cache.add(VulnerabilityData(vuln.id, vuln.fix_versions, raw_severity))
